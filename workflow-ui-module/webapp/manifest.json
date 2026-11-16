@@ -1,0 +1,355 @@
+{
+    "_version": "1.26.0",
+    "sap.app": {
+        "id": "com.hpe.gts.workflowuimodule",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:basic",
+            "version": "1.8.4",
+            "toolsId": "5f5e05c5-0fc2-4cbb-a9b3-faf1ff212b7f"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "sap/opu/odata/sap/ZGTS_ODATA_LPP_SRV/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "2.0"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.82.2",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.f": {},
+                "sap.suite.ui.generic.template": {},
+                "sap.ui.comp": {},
+                "sap.ui.generic.app": {},
+                "sap.ui.table": {},
+                "sap.ushell": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "com.hpe.gts.workflowuimodule.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {}
+            }
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ]
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "async": true,
+                "viewPath": "com.hpe.gts.workflowuimodule.view",
+                "controlAggregation": "pages",
+                "controlId": "app",
+                "clearControlAggregation": false
+            },
+            "routes": [
+                {
+                    "name": "RouteApp",
+                    "pattern": ":?query:",
+                    "target": [
+                        "TargetApp"
+                    ]
+                }
+            ],
+            "targets": {
+                "TargetApp": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "App",
+                    "viewName": "App"
+                }
+            }
+        },
+        "rootView": {
+            "viewName": "com.hpe.gts.workflowuimodule.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "App"
+        }
+    },
+    "sap.cloud": {
+        "public": true,
+        "service": "zgtslppapproval"
+    },
+    "sap.bpa.task": {
+        "_version": "1.0.0",
+        "outcomes": [
+            {
+                "id": "approve",
+                "label": "Approve"
+            },
+            {
+                "id": "reject",
+                "label": "Reject"
+            }
+        ],
+        "category": "approval",
+        "inputs": {
+            "$schema": "http://json-schema.org/draft-07/schema",
+            "title": "input",
+            "type": "object",
+            "required": [
+                "salesOrderNumber"
+            ],
+            "properties": {
+                "salesOrderNumber": {
+                    "type": "string",
+                    "title": "Sales Order Number",
+                    "description": "Sales Order Number"
+                },
+                "ultimateConsignee": {
+                    "type": "string",
+                    "title": "Ultimate Consignee",
+                    "description": "Ultimate Consignee"
+                },
+                "ucOwnerName": {
+                    "type": "string",
+                    "title": "Name of Ultimate Consignee (Owner)",
+                    "description": "Name of Ultimate Consignee (Owner)"
+                },
+                "ucAuthorizedPersonName": {
+                    "type": "string",
+                    "title": "Name of Authorized Person",
+                    "description": "Name of Authorized Person"
+                },
+                "ucAddress": {
+                    "type": "string",
+                    "title": "UC Address",
+                    "description": "Ultimate Consignee Address"
+                },
+                "ucCity": {
+                    "type": "string",
+                    "title": "UC City",
+                    "description": "Ultimate Consignee City"
+                },
+                "ucCountry": {
+                    "type": "string",
+                    "title": "UC Country",
+                    "description": "Ultimate Consignee Country"
+                },
+                "ucWebsite": {
+                    "type": "string",
+                    "title": "UC Website",
+                    "description": "Ultimate Consignee Website"
+                },
+                "ucEmail": {
+                    "type": "string",
+                    "title": "UC E-mail",
+                    "description": "E-mail of person completing the form (Ultimate Consignee)"
+                },
+                "endUserName": {
+                    "type": "string",
+                    "title": "Name of End User(s)",
+                    "description": "Name of End User(s) (Entity name)"
+                },
+                "euAddress": {
+                    "type": "string",
+                    "title": "EU Address",
+                    "description": "End User Address"
+                },
+                "euCity": {
+                    "type": "string",
+                    "title": "EU City",
+                    "description": "End User City"
+                },
+                "euCountry": {
+                    "type": "string",
+                    "title": "EU Country",
+                    "description": "End User Country"
+                },
+                "euWebsite": {
+                    "type": "string",
+                    "title": "EU Website",
+                    "description": "End User Website"
+                },
+                "euEmail": {
+                    "type": "string",
+                    "title": "EU E-mail",
+                    "description": "E-mail of person completing the form (End User)"
+                },
+                "items": {
+                    "type": "array",
+                    "title": "Products",
+                    "description": "Product lines of the certificate",
+                    "items": {
+                        "$ref": "#/definitions/item"
+                    }
+                }
+            },
+            "definitions": {
+                "item": {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                        "applicable": {
+                            "type": "boolean",
+                            "title": "Applicable",
+                            "description": "Check all that are applicable"
+                        },
+                        "productDescription": {
+                            "type": "string",
+                            "title": "Product Description",
+                            "description": "Product Description"
+                        },
+                        "gpuQuantity": {
+                            "type": "string",
+                            "title": "Quantity of GPUs",
+                            "description": "Quantity of GPUs"
+                        },
+                        "gpuModel": {
+                            "type": "string",
+                            "title": "Model of GPU",
+                            "description": "Model of GPU"
+                        },
+                        "eccn": {
+                            "type": "string",
+                            "title": "ECCN",
+                            "description": "ECCN"
+                        }
+                    }
+                }
+            }
+        },
+        "outputs": {
+            "$schema": "http://json-schema.org/draft-07/schema",
+            "title": "output",
+            "type": "object",
+            "required": [],
+            "properties": {
+                "ucAuthorizedPersonTitle": {
+                    "type": "string",
+                    "title": "Title of Authorized Person",
+                    "description": "Title of Authorized Person"
+                },
+                "ucSignature": {
+                    "type": "string",
+                    "title": "Signature(s) of Authorized Person",
+                    "description": "Signature(s) of Authorized Person"
+                },
+                "ucSignedDate": {
+                    "type": "string",
+                    "title": "Date Document is Signed (UC)",
+                    "description": "Date Document is Signed"
+                },
+                "euTitle": {
+                    "type": "string",
+                    "title": "Title (End User)",
+                    "description": "Title of End User signatory"
+                },
+                "euSignature": {
+                    "type": "string",
+                    "title": "Signature(s) of End User(s)",
+                    "description": "Signature(s) of End User(s)"
+                },
+                "euSignedDate": {
+                    "type": "string",
+                    "title": "Date(s) Document is Signed (EU)",
+                    "description": "Date(s) Document is Signed"
+                },
+                "comment": {
+                    "type": "string",
+                    "title": "Comment",
+                    "description": "Approver comment"
+                },
+                "items": {
+                    "type": "array",
+                    "title": "Products",
+                    "description": "Product lines (with applicable flags) after review",
+                    "items": {
+                        "$ref": "#/definitions/item"
+                    }
+                },
+                "customerReviewRequired": {
+                    "type": "string",
+                    "title": "Customer Review Required",
+                    "description": "Yes / No - set by the level 2 approver"
+                }        
+            },
+            "definitions": {
+                "item": {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                        "applicable": {
+                            "type": "boolean",
+                            "title": "Applicable",
+                            "description": "Check all that are applicable"
+                        },
+                        "productDescription": {
+                            "type": "string",
+                            "title": "Product Description",
+                            "description": "Product Description"
+                        },
+                        "gpuQuantity": {
+                            "type": "string",
+                            "title": "Quantity of GPUs",
+                            "description": "Quantity of GPUs"
+                        },
+                        "gpuModel": {
+                            "type": "string",
+                            "title": "Model of GPU",
+                            "description": "Model of GPU"
+                        },
+                        "eccn": {
+                            "type": "string",
+                            "title": "ECCN",
+                            "description": "ECCN"
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+}

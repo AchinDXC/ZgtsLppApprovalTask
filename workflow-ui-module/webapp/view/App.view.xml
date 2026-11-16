@@ -1,0 +1,232 @@
+<mvc:View xmlns:u="sap.ui.unified" controllerName="com.hpe.gts.workflowuimodule.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    displayBlock="true">
+    <App id="app">
+        <Page id="page" showHeader="false" class="lppPage">
+            <content>
+                <VBox id="card" class="lppCard">
+                    <OverflowToolbar id="hdlBar" style="Clear" class="lppHeaderBar">
+                        <Title id="hdl" level="H2" titleStyle="H6" wrapping="true" class="lppHeadline"
+                        text="Low Processing Performance (LPP) License Exception Certification &#167;740.29"/>
+                        <ToolbarSpacer id="hdlSpacer"/>
+                        <Button id="btnPreviewPdf" icon="sap-icon://pdf-attachment" type="Transparent"
+                            tooltip="Preview as PDF" ariaLabelledBy="hdl" press=".onPreviewPdf"/>
+                        <Button id="btnStorePdf" icon="sap-icon://upload-to-cloud" type="Transparent"
+                            tooltip="Generate certificate and store in DMS" press=".onGenerateCertificate"/>
+                    </OverflowToolbar>
+                    <Text id="p0" class="lppPara" renderWhitespace="true"
+                        text="This certification is provided in compliance with the requirements of the Export Administration Regulations&#10;(EAR), &#167;15 C.F.R. parts 730-774, by the Ultimate Consignee (owner of items identified below) and End&#10;User. In the gts of this certification, the Ultimate Consignee will own the products below and the End&#10;User will use the products. The Ultimate Consignee and the End User could be the same entity."/>
+                    <Text id="p1" class="lppPara" text="I, {gts>/UcCustomerName}, hereby certify and agree to the following"/>
+
+                    <VBox id="fUc" class="lppField">
+                        <Label id="lUc" text="ULTIMATE CONSIGNEE" labelFor="iUc" wrapping="true"/>
+                        <Input id="iUc" value="{gts>/UcCustomerName}" editable="{task>/readOnly}"/>
+                    </VBox>
+
+                    <Text id="p2" class="lppPara" renderWhitespace="true"
+                        text="1. I agree that the items on order  {gts>/SalesOrder}, will be shipped pursuant to License Exception Low&#10;Processing Performance (LPP) and include items with the following Export Control Classification&#10;Numbers (ECCN):"/>
+
+                    <VBox id="fSo" class="lppField">
+                        <Label id="lSo" text="Sales Order Number" labelFor="iSo" wrapping="true"/>
+                        <Input id="iSo" value="{gts>/SalesOrder}" editable="false"/>
+                    </VBox>
+
+                    <VBox id="fTable" class="lppField">
+                        <Table id="itemsTable" items="{gts>/LppItem}" noDataText="No data" class="lppTable">
+                            <headerToolbar>
+                                <OverflowToolbar id="tblToolbar" style="Clear">
+                                    <Label id="lTable" text="New Table"/>
+                                    <ToolbarSpacer id="tblSpacer"/>
+                                    <Button id="btnAdd" icon="sap-icon://add" type="Transparent" tooltip="Add" press=".onAddRow"/>
+                                    <SearchField id="tblSearch" width="10rem" placeholder="Enter search term" liveChange=".onSearch" search=".onSearch"/>
+                                </OverflowToolbar>
+                            </headerToolbar>
+                            <columns>
+                                <Column id="cChk" hAlign="Center"><Text id="hChk" text="Check all that are applicable:"/></Column>
+                                <Column id="cDesc"><Text id="hDesc" text="Product Description"/></Column>
+                                <Column id="cQty" minScreenWidth="Tablet" demandPopin="true"><Text id="hQty" text="Quantity of GPUs"/></Column>
+                                <Column id="cModel" minScreenWidth="Tablet" demandPopin="true"><Text id="hModel" text="Model of GPU"/></Column>
+                                <Column id="cEccn" minScreenWidth="Tablet" demandPopin="true"><Text id="hEccn" text="ECCN"/></Column>
+                                <Column id="cDel" width="3rem" hAlign="Center"><Text id="hDel" text=""/></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem id="row">
+                                    <cells>
+                                        <CheckBox id="cbApp" selected="{gts>Applicable}" editable="false"/>
+                                        <Input id="iDesc" value="{gts>ProdDesc}" editable="false"/>
+                                        <Input id="iQty" value="{gts>Qunt}" editable="false"/>
+                                        <Input id="iModel" value="{gts>GpuModel}" placeholder="Enter text" editable="false"/>
+                                        <Input id="iEccn" value="{gts>Eccn}" editable="false"/>
+                                        <Button id="btnDel" icon="sap-icon://delete" type="Transparent" tooltip="Delete" press=".onDeleteRow"/>
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </VBox>
+
+                    <Text id="p3" class="lppPara" renderWhitespace="true"
+                        text="2. I agree not to export, reexport, or transfer these items to any end use or end user prohibited&#10;under Part 744 of the Export Administration Regulations."/>
+                    <Text id="p4" class="lppPara" renderWhitespace="true"
+                        text="3. I agree that receiving the items in this order will not result in our company receiving a cumulative TPP&#10;of 26,900,000 from all vendors under license exception TPP in the current calendar of ECCNs&#10;3A001.z.1.a, z.2.a, z.3.a, z.4.a; 3A090.a; 4A003.z.1.a, z.2.a; 4A004.z.1; 4A005.z.1; 4A090.a;&#10;5A002.z.1.a, z.2.a, z.3.a, z.4.a, z.5.a; 5A004.z.1.a, z.2.a; 5A992.z.1, 5A004.z.1.a, z.2.a; 5A992.z.1"/>
+                    <Text id="p5" class="lppPara" text="4. I agree that the items are not and will not be exported or re-exported to Country Group D:5 or Macau; (Sec 2h)"/>
+                    <Text id="p6" class="lppPara" renderWhitespace="true"
+                        text="5. I agree that the Ultimate Consignee is not headquartered in or has an ultimate parent company&#10;headquartered in Country Group D:5 or Macau; (Section 2h)"/>
+                    <Text id="p7" class="lppPara" renderWhitespace="true"
+                        text="6. I agree that if we have reached the &#8216;cumulative TPP&#8217;, that we agree to notify BIS by email to&#10;EARReports@bis.doc.gov with subject line &#8220;LPP TPP Limit Reached&#8221;."/>
+                    <Text id="p8" class="lppPara" text="7. I agree not to transfer the products above inside the destination country."/>
+                    <Text id="p9" class="lppPara" text="8. Acknowledgment"/>
+                    <Text id="p10" class="lppPara"
+                        text="By signing this certification below, as the Ultimate Consignee (owner of items identified above), I acknowledge that I am fully authorized to bind to the commitments 1-7 outlined above and the information provided herein is true and accurate"/>
+
+                    <VBox id="fUcOwner" class="lppField">
+                        <Label id="lUcOwner" text="Name of Ultimate Consignee (Owner): " labelFor="iUcOwner" wrapping="true"/>
+                        <Input id="iUcOwner" value="{gts>/UcCustomerName}" editable="{task>/readOnly}"/>
+                    </VBox>
+                    <VBox id="fUcAuth" class="lppField">
+                        <Label id="lUcAuth" text="Name of Authorized Person: " labelFor="iUcAuth" wrapping="true"/>
+                        <Input id="iUcAuth" value="{gts>/UcCustomerName}" editable="{task>/readOnly}"/>
+                    </VBox>
+                    <VBox id="fUcAuthTitle" class="lppField">
+                        <Label id="lUcAuthTitle" text="Title of Authorized Person: " labelFor="iUcAuthTitle" wrapping="true"/>
+                        <Input id="iUcAuthTitle" value="{context>/ucAuthorizedPersonTitle}" placeholder="Enter text" editable="{task>/readOnly}" maxLength="256"/>
+                    </VBox>
+                    <VBox id="fUcSign" class="lppField">
+                        <Label id="lUcSign" text="Signature(s) of Authorized Person: " labelFor="iUcSign" wrapping="true"/>
+                        <Input id="iUcSign" value="{context>/ucSignature}" placeholder="Enter text" editable="{task>/readOnly}" maxLength="256"/>
+                    </VBox>
+                    <VBox id="fUcDate" class="lppField">
+                        <Label id="lUcDate" text="Date Document is Signed:" labelFor="iUcDate" wrapping="true"/>
+                        <Input id="iUcDate" value="{context>/ucSignedDate}" placeholder="Enter text" editable="true" maxLength="256"/>
+                    </VBox>
+
+                    <Text id="p11" class="lppPara" text="Section 2n for below table"/>
+
+                    <VBox id="fUcAddr" class="lppField">
+                        <Label id="lUcAddr" text="Address: " labelFor="iUcAddr" wrapping="true"/>
+                        <Input id="iUcAddr" value="{gts>/UcStreet}" editable="true"/>
+                    </VBox>
+                    <VBox id="fUcCity" class="lppField">
+                        <Label id="lUcCity" text="City:" labelFor="iUcCity" wrapping="true"/>
+                        <Input id="iUcCity" value="{gts>/UcCity}" editable="true"/>
+                    </VBox>
+                    <VBox id="fUcCountry" class="lppField">
+                        <Label id="lUcCountry" text="Country: " labelFor="iUcCountry" wrapping="true"/>
+                        <Input id="iUcCountry" value="{gts>/UcCountry}" editable="true"/>
+                    </VBox>
+                    <VBox id="fUcWeb" class="lppField">
+                        <Label id="lUcWeb" text="Website:" labelFor="iUcWeb" wrapping="true"/>
+                        <Input id="iUcWeb" value="{gts>/UcWebsite}" editable="true"/>
+                    </VBox>
+                    <VBox id="fUcMail" class="lppField">
+                        <Label id="lUcMail" text="E-mail address of person completing  this form (This email address will be  use to send all required" labelFor="iUcMail" wrapping="true"/>
+                        <Input id="iUcMail" value="{gts>/UcCustEmail}" editable="true"/>
+                    </VBox>
+
+                    <Text id="p12" class="lppPara" renderWhitespace="true"
+                        text="By signing this certification below, as the End User of the products, I acknowledge that I am fully authorized &#10;to bind End User to the commitments 1-7 outlined above and the information provided herein is true and &#10;accurate.  This section is not required if the End User is the same as the Ultimate Consignee. "/>
+
+                    <VBox id="fEuName" class="lppField">
+                        <Label id="lEuName" text="Name of End User(s) (Entity name):" labelFor="iEuName" wrapping="true"/>
+                        <Input id="iEuName" value="{gts>/EuCustomerName}" editable="true"/>
+                    </VBox>
+                    <VBox id="fEuTitle" class="lppField">
+                        <Label id="lEuTitle" text="Title: " labelFor="iEuTitle" wrapping="true"/>
+                        <Input id="iEuTitle" value="{gts>/euTitle}" placeholder="Enter text" editable="true" maxLength="256"/>
+                    </VBox>
+                    <VBox id="fEuSign" class="lppField">
+                        <Label id="lEuSign" text="Signature(s) of End User(s) " labelFor="iEuSign" wrapping="true"/>
+                        <Input id="iEuSign" value="{context>/euSignature}" placeholder="Enter text" editable="true" maxLength="256"/>
+                    </VBox>
+                    <VBox id="fEuDate" class="lppField">
+                        <Label id="lEuDate" text="Date(s) Document is Signed: " labelFor="iEuDate" wrapping="true"/>
+                        <Input id="iEuDate" value="{context>/euSignedDate}" placeholder="Enter text" editable="true" maxLength="256"/>
+                    </VBox>
+                    <VBox id="fEuAddr" class="lppField">
+                        <Label id="lEuAddr" text="Address: " labelFor="iEuAddr" wrapping="true"/>
+                        <Input id="iEuAddr" value="{gts>/EuStreet}" editable="true"/>
+                    </VBox>
+                    <VBox id="fEuCity" class="lppField">
+                        <Label id="lEuCity" text="City: " labelFor="iEuCity" wrapping="true"/>
+                        <Input id="iEuCity" value="{gts>/EuCity}" editable="true"/>
+                    </VBox>
+                    <VBox id="fEuCountry" class="lppField">
+                        <Label id="lEuCountry" text="Country: " labelFor="iEuCountry" wrapping="true"/>
+                        <Input id="iEuCountry" value="{gts>/EuCountry}" editable="true"/>
+                    </VBox>
+                    <VBox id="fEuWeb" class="lppField">
+                        <Label id="lEuWeb" text="Website: " labelFor="iEuWeb" wrapping="true"/>
+                        <Input id="iEuWeb" value="{gts>/EuWebsite}" editable="true"/>
+                    </VBox>
+                    <VBox id="fEuMail" class="lppField">
+                        <Label id="lEuMail" text="E-mail address of person completing  this form (This email address will be  use to send all required" labelFor="iEuMail" wrapping="true"/>
+                        <Input id="iEuMail" value="{gts>/EuCustEmail}" editable="true"/>
+                    </VBox>
+
+                    <Text id="p13" class="lppPara" renderWhitespace="true"
+                        text="*Please note that this certification is being collected manually, after completing it please send by email to &#10;gtaicertification@hpe.com. An automated certification system is currently in development, and you may be required &#10;to re-sign this certification electronically once the system is implemented. HPE appreciates your understanding and &#10;cooperation as we work to automate processes. "/>
+
+                    <VBox id="fComment" class="lppField">
+                        
+                        <Label id="lComment" text="Comment (required when Approval / Reject)" labelFor="iComment" wrapping="true"/>
+                        <TextArea id="iComment" value="{context>/comment}" placeholder="Enter text" rows="2" width="100%" growing="true"/>
+                    </VBox>
+
+                                    <VBox id="fCustReview" class="lppField sapUiSmallMarginBottom"
+                        visible="{= ${task>/processLevel} === '2' }">
+                        <Label id="lCustReview" text="Customer Review Required" labelFor="selCustReview" required="true"/>
+                        <Select id="selCustReview" width="12rem" forceSelection="false"
+                            selectedKey="{context>/customerReviewRequired}" change=".onCustReviewChange">
+                            <core:Item id="ciCustRevEmpty" key="" text="- Select -"/>
+                            <core:Item id="ciCustRevYes" key="Yes" text="Yes"
+                                enabled="{= !${ui>/custEmailMissing} || ${ui>/custEmailValid} }"/>
+                            <core:Item id="ciCustRevNo" key="No" text="No"/>
+                        </Select>
+
+                        <VBox id="fCustEmail" visible="{ui>/custEmailMissing}" class="sapUiTinyMarginTop">
+                            <MessageStrip id="msCustEmail" type="Warning" showIcon="true"
+                                text="No customer e-mail is maintained. Enter it to select 'Yes'."/>
+                            <Input id="iCustEmail" type="Email" width="24rem" maxLength="60" class="sapUiTinyMarginTop"
+                                placeholder="Enter customer e-mail address"
+                                value="{ui>/custEmailInput}" liveChange=".onCustEmailChange"
+                                valueState="{ui>/custEmailState}" valueStateText="Enter a valid e-mail address"/>
+                        </VBox>
+                    </VBox>
+                    
+
+                    <Text id="p14" class="lppPara" text="Hewlett Packard Enterprise &#8211; LPP Certification v1.10 &#8211; Last Updated April 25, 2025"/>
+                    <VBox id="fSignedCopy" class="lppField"
+                        visible="{= ${task>/processLevel} === '4' || ${task>/processLevel} === '6' }">
+                        <Label id="lSignedCopy" text="Additional Documents" labelFor="signedCopyUploader"/>
+                        <HBox id="hbSignedCopy" alignItems="Center">
+                            <u:FileUploader id="signedCopyUploader" width="100%"
+                                placeholder="Choose the additional documents to upload..." sameFilenameAllowed="true"
+                                maximumFileSize="25" fileType="pdf,png,jpg,jpeg"
+                                change=".onSignedCopyChange" fileSizeExceed=".onFileSizeExceed" typeMissmatch=".onTypeMismatch"/>
+                            <Button id="btnUploadSignedCopy" text="Upload" icon="sap-icon://upload" type="Emphasized"
+                                class="sapUiSmallMarginBegin" press=".onUploadSignedCopy"/>
+                        </HBox>
+                    </VBox>
+                    <VBox id="fAttach" class="lppField">
+                        <Label id="lAttach" text="Attachments" labelFor="fileUploader"/>
+                        <HBox id="hbAttach" alignItems="Center">
+                            <u:FileUploader id="fileUploader" name="uploadFile" width="100%"
+                                placeholder="Choose a file..." sameFilenameAllowed="true"
+                                maximumFileSize="25" fileType="pdf,doc,docx,xls,xlsx,png,jpg,jpeg,txt,msg"
+                                useMultipart="false" sendXHR="true"
+                                change=".onFileChange" fileSizeExceed=".onFileSizeExceed" typeMissmatch=".onTypeMismatch"                                
+                                />
+                            <Button id="btnUpload" text="Upload" icon="sap-icon://upload" type="Emphasized"
+                                class="sapUiSmallMarginBegin" press=".onUploadToDms"/>
+                        </HBox>
+                        <List id="attachList" noDataText="No attachments" items="{context>/attachments}">
+                            <StandardListItem id="attachItem" title="{context>fileName}" description="{context>uploadedOn}"
+                                icon="sap-icon://attachment" type="Active" press=".onOpenAttachment"/>
+                        </List>
+                    </VBox>
+                </VBox>
+            </content>
+        </Page>
+    </App>
+</mvc:View>

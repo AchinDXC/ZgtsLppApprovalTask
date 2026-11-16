@@ -1,0 +1,245 @@
+sap.ui.define(
+  [
+    "sap/ui/core/mvc/Controller",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
+    "sap/m/Dialog",
+    "sap/m/Button",
+    "sap/ui/core/HTML",
+    "sap/m/MessageBox"
+  ],
+  function (Controller, Filter, FilterOperator, Dialog, Button, HTML, MessageBox) {
+    "use strict";
+
+    // Adobe Forms (ADS) template used by the process step "Render PDF 5"
+    var XDP_TEMPLATE = "LPPCertificateForm/LPPCertificateTemplate";
+
+    function esc(v) {
+      if (v === null || v === undefined) {
+        return "";
+      }
+      return String(v)
+        .split("&").join("&amp;")
+        .split("<").join("&lt;")
+        .split(">").join("&gt;")
+        .split("\"").join("&quot;")
+        .split("'").join("&apos;");
+    }
+
+    function tag(n, v) {
+      return "<" + n + ">" + esc(v) + "</" + n + ">";
+    }
+
+    function utf8ToBase64(str) {
+      var bytes = new TextEncoder().encode(str);
+      var bin = "";
+      for (var i = 0; i < bytes.length; i++) {
+        bin += String.fromCharCode(bytes[i]);
+      }
+      return btoa(bin);
+    }
+
+    function base64ToBlob(b64, type) {
+      var bin = atob(b64);
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) {
+        bytes[i] = bin.charCodeAt(i);
+      }
+      return new Blob([bytes], { type: type });
+    }
+
+    return Controller.extend("com.hpe.gts.workflowuimodule.controller.App", {
+      onInit: function () {},
+
+      _getContextModel: function () {
+        return this.getOwnerComponent().getModel("context");
+      },
+
+      /* ---------------- Product table ---------------- */
+
+      onAddRow: function () {
+        var oModel = this._getContextModel();
+        var aItems = (oModel.getProperty("/items") || []).slice();
+        aItems.push({ applicable: false, productDescription: "", gpuQuantity: "", gpuModel: "", eccn: "" });
+        oModel.setProperty("/items", aItems);
+      },
+
+      onDeleteRow: function (oEvent) {
+        var oModel = this._getContextModel();
+        var sPath = oEvent.getSource().getBindingContext("context").getPath();
+        var iIndex = parseInt(sPath.split("/").pop(), 10);
+        var aItems = (oModel.getProperty("/items") || []).slice();
+        aItems.splice(iIndex, 1);
+        oModel.setProperty("/items", aItems);
+      },
+
+      onSearch: function (oEvent) {
+        var sQuery = oEvent.getParameter("newValue");
+        if (sQuery === undefined) {
+          sQuery = oEvent.getParameter("query");
+        }
+        var aFilters = [];
+        if (sQuery) {
+          aFilters.push(
+            new Filter({
+              filters: ["productDescription", "gpuQuantity", "gpuModel", "eccn"].map(function (sField) {
+                return new Filter(sField, FilterOperator.Contains, sQuery);
+              }),
+              and: false
+            })
+          );
+        }
+        this.byId("itemsTable").getBinding("items").filter(aFilters);
+      },
+
+      /* ---------------- Preview as PDF (SAP Forms Service by Adobe) ---------------- */
+
+      // Same XML structure as the process script "Build Certificate XML"
+      _buildCertificateXml: function () {
+        var c = this._getContextModel().getData() || {};
+        var so = c.salesOrderNumber || "";
+        var items = c.items || [];
+
+        var hf = [
+          ["REQUEST_ID", ""],
+          ["GTS_DOCUMENT", ""],
+          ["SALES_ORDER", so],
+          ["UC_CUSTOMER_NAME", c.ucOwnerName || c.ultimateConsignee || "Not Provided"],
+          ["UC_STREET", c.ucAddress],
+          ["UC_CITY", c.ucCity],
+          ["UC_COUNTRY", c.ucCountry],
+          ["UC_WEBSITE", c.ucWebsite],
+          ["UC_CUST_EMAIL", c.ucEmail],
+          ["EU_CUSTOMER_NAME", c.endUserName || "Not Provided"],
+          ["EU_STREET", c.euAddress],
+          ["EU_CITY", c.euCity],
+          ["EU_COUNTRY", c.euCountry],
+          ["EU_WEBSITE", c.euWebsite],
+          ["EU_CUST_EMAIL", c.euEmail],
+          ["LEGAL_REGULATION", "LPP"],
+          ["STATUS", "PREVIEW"],
+          ["CERTIFICATE_ID", "LPP-CERT-" + (so || "PREVIEW") + "-PREVIEW"],
+          ["CHANGED_AT", new Date().toISOString().split(".")[0] + "Z"]
+        ];
+
+        var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><data><IM_LPP_ORDER_HEADER>";
+        hf.forEach(function (f) {
+          xml += tag(f[0], f[1]);
+        });
+        xml += "</IM_LPP_ORDER_HEADER><IM_LPP_ORDER_ITEM>";
+
+        var gpus = [];
+        items.forEach(function (it, j) {
+          if (it.gpuModel) {
+            gpus.push(String(it.gpuModel));
+          }
+          xml += "<DATA>" +
+            tag("SALES_ORDER_ITEM", String((j + 1) * 10)) +
+            tag("PROD_DESC", it.productDescription) +
+            tag("QUNT", it.gpuQuantity) +
+            tag("GPU_MODEL", it.gpuModel) +
+            tag("ECCN", it.eccn) +
+            "</DATA>";
+        });
+        xml += "</IM_LPP_ORDER_ITEM><IM_LPP_ORDER>" + tag("SALES_ORDER", so) +
+          tag("GPU_MODEL", gpus.join(", ")) + "</IM_LPP_ORDER></data>";
+        return xml;
+      },
+
+      onPreviewPdf: function () {
+        var oView = this.getView();
+        var sUrl = sap.ui.require.toUrl("com/hpe/gts/workflowuimodule") +
+          "/ads/v1/adsRender/pdf?templateSource=storageName";
+        var oBody = {
+          xdpTemplate: XDP_TEMPLATE,
+          xmlData: utf8ToBase64(this._buildCertificateXml()),
+          formType: "print",
+          formLocale: "en_US",
+          taggedPdf: 1,
+          embedFont: 0
+        };
+
+        oView.setBusy(true);
+        jQuery
+          .ajax({
+            url: sUrl,
+            method: "POST",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(oBody)
+          })
+          .done(
+            function (oResult) {
+              if (!oResult || !oResult.fileContent) {
+                MessageBox.error("The Adobe Forms service returned no PDF content.");
+                return;
+              }
+              this._showPdf(oResult.fileContent, oResult.fileName);
+            }.bind(this)
+          )
+          .fail(function (oXhr) {
+            MessageBox.error(
+              "Could not render the PDF preview (" + oXhr.status + ").\n" + (oXhr.responseText || oXhr.statusText)
+            );
+          })
+          .always(function () {
+            oView.setBusy(false);
+          });
+      },
+
+      _showPdf: function (sBase64, sFileName) {
+        if (this._sPdfUrl) {
+          URL.revokeObjectURL(this._sPdfUrl);
+        }
+        this._sPdfUrl = URL.createObjectURL(base64ToBlob(sBase64, "application/pdf"));
+        this._sPdfFileName = sFileName || "LPP_Certificate_Preview.pdf";
+
+        if (!this._oPdfDialog) {
+          this._oPdfHtml = new HTML({ preferDOM: false });
+          this._oPdfDialog = new Dialog({
+            title: "LPP Certificate - Preview",
+            contentWidth: "90%",
+            contentHeight: "85%",
+            resizable: true,
+            draggable: true,
+            horizontalScrolling: false,
+            verticalScrolling: false,
+            content: [this._oPdfHtml],
+            beginButton: new Button({
+              text: "Download",
+              type: "Emphasized",
+              press: this._downloadPdf.bind(this)
+            }),
+            endButton: new Button({
+              text: "Close",
+              press: function () {
+                this._oPdfDialog.close();
+              }.bind(this)
+            })
+          });
+          this.getView().addDependent(this._oPdfDialog);
+        }
+        this._oPdfHtml.setContent(
+          "<iframe title=\"LPP Certificate preview\" src=\"" + this._sPdfUrl +
+            "\" style=\"width:100%;height:100%;border:0;display:block\"></iframe>"
+        );
+        this._oPdfDialog.open();
+      },
+
+      _downloadPdf: function () {
+        var oLink = document.createElement("a");
+        oLink.href = this._sPdfUrl;
+        oLink.download = this._sPdfFileName;
+        document.body.appendChild(oLink);
+        oLink.click();
+        document.body.removeChild(oLink);
+      },
+
+      onExit: function () {
+        if (this._sPdfUrl) {
+          URL.revokeObjectURL(this._sPdfUrl);
+        }
+      }
+    });
+  }
+);

@@ -1,0 +1,63 @@
+/* Look & feel aligned with SAP Build Process Automation forms */
+.lppPage.sapMPage > section,
+.lppPage .sapMPageEnableScrolling {
+    background: var(--sapBackgroundColor, #f5f6f7);
+}
+
+.lppCard {
+    max-width: 64rem;
+    margin: 1rem auto 2rem auto;
+    padding: 1rem 1.5rem 2rem 1.5rem;
+    background: var(--sapGroup_ContentBackground, #ffffff);
+    border-radius: var(--sapElement_BorderCornerRadius, 0.75rem);
+    box-shadow: var(--sapContent_Shadow0, 0 0 0.125rem 0 rgba(34, 53, 72, 0.2), 0 0.125rem 0.25rem 0 rgba(34, 53, 72, 0.2));
+}
+
+.lppHeadline {
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.lppHeadline.sapMTitle {
+    font-weight: bold;
+}
+
+.lppPara {
+    display: block;
+    margin-top: 1rem;
+    color: var(--sapTextColor, #1d2d3e);
+}
+
+.lppField {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.lppField > .sapMLabel {
+    color: var(--sapContent_LabelColor, #556b82);
+    font-size: var(--sapFontSmallSize, 0.75rem);
+    padding-bottom: 0.25rem;
+}
+
+.lppField .sapMInputBase {
+    width: 100%;
+}
+
+.lppTable .sapMListTblHeaderCell .sapMText {
+    font-size: var(--sapFontSmallSize, 0.75rem);
+    color: var(--sapContent_LabelColor, #556b82);
+}
+
+.lppTable .sapMTB {
+    padding-left: 0;
+}
+
+.lppHeaderBar.sapMTB {
+    padding: 0;
+    height: auto;
+    min-height: 2.5rem;
+}
+
+.lppHeaderBar .lppHeadline {
+    margin: 0;
+}
