@@ -34,7 +34,7 @@
         {
             "source": "^/sap/opu/odata/(.*)$",
             "target": "/sap/opu/odata/$1",
-            "destination": "BAS-GGT",
+            "destination": "BAS-G1D",
             "authenticationType": "xsuaa",
             "csrfProtection": false
         },

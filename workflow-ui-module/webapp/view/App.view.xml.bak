@@ -1,4 +1,4 @@
-<mvc:View controllerName="com.hpe.gts.workflowuimodule.controller.App"
+<mvc:View controllerName="com.hpe.gts.workflowuimodule.dev.controller.App"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:core="sap.ui.core"
     xmlns="sap.m"

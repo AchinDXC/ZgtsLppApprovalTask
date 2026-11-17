@@ -68,7 +68,7 @@ sap.ui.define(
       }
     }
 
-    return Controller.extend("com.hpe.gts.workflowuimodule.controller.App", {
+    return Controller.extend("com.hpe.gts.workflowuimodule.dev.controller.App", {
       onInit: function () {
         this._oSelectedFile = null;
         this._oSignedCopyFile = null;

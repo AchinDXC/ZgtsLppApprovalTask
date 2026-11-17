@@ -48,7 +48,7 @@ sap.ui.define(
       return new Blob([bytes], { type: type });
     }
 
-    return Controller.extend("com.hpe.gts.workflowuimodule.controller.App", {
+    return Controller.extend("com.hpe.gts.workflowuimodule.dev.controller.App", {
       onInit: function () {},
 
       _getContextModel: function () {

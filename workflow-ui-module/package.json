@@ -1,5 +1,5 @@
 {
-  "name": "workflow-ui-module",
+  "name": "workflow-ui-module-dev",
   "version": "0.0.1",
   "private": true,
   "description": "SAPUI5 task UI for GTS LPP Electronic Certificate approval",
@@ -18,8 +18,8 @@
     "mbt": "^1.2.18"
   },
   "scripts": {
-    "start": "fiori run --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#comhpegtsworkflowuimodule-display\"",
-    "start-local": "fiori run --config ./ui5-local.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#comhpegtsworkflowuimodule-display\"",
+    "start": "fiori run --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#comhpegtsworkflowuimoduledev-display\"",
+    "start-local": "fiori run --config ./ui5-local.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#comhpegtsworkflowuimoduledev-display\"",
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
     "deploy": "fiori verify",
     "deploy-config": "fiori add deploy-config",

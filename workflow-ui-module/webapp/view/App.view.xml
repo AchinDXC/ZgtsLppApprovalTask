@@ -1,4 +1,4 @@
-<mvc:View xmlns:u="sap.ui.unified" controllerName="com.hpe.gts.workflowuimodule.controller.App"
+<mvc:View xmlns:u="sap.ui.unified" controllerName="com.hpe.gts.workflowuimodule.dev.controller.App"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:core="sap.ui.core"
     xmlns="sap.m"
@@ -18,11 +18,11 @@
                     </OverflowToolbar>
                     <Text id="p0" class="lppPara" renderWhitespace="true"
                         text="This certification is provided in compliance with the requirements of the Export Administration Regulations&#10;(EAR), &#167;15 C.F.R. parts 730-774, by the Ultimate Consignee (owner of items identified below) and End&#10;User. In the gts of this certification, the Ultimate Consignee will own the products below and the End&#10;User will use the products. The Ultimate Consignee and the End User could be the same entity."/>
-                    <Text id="p1" class="lppPara" text="I, {gts>/UcCustomerName}, hereby certify and agree to the following"/>
+                    <Text id="p1" class="lppPara" text="I, {ui>/certifyName}, hereby certify and agree to the following"/>
 
-                    <VBox id="fUc" class="lppField">
+                    <VBox id="fUc" class="lppField" visible="{ui>/showUc}">
                         <Label id="lUc" text="ULTIMATE CONSIGNEE" labelFor="iUc" wrapping="true"/>
-                        <Input id="iUc" value="{gts>/UcCustomerName}" editable="{task>/readOnly}"/>
+                        <Input id="iUc" value="{ui>/certifyName}" editable="{task>/editableProps/ultimateConsignee}"/>
                     </VBox>
 
                     <Text id="p2" class="lppPara" renderWhitespace="true"
@@ -30,7 +30,7 @@
 
                     <VBox id="fSo" class="lppField">
                         <Label id="lSo" text="Sales Order Number" labelFor="iSo" wrapping="true"/>
-                        <Input id="iSo" value="{gts>/SalesOrder}" editable="false"/>
+                        <Input id="iSo" value="{gts>/SalesOrder}" editable= "false"/>
                     </VBox>
 
                     <VBox id="fTable" class="lppField">
@@ -39,7 +39,7 @@
                                 <OverflowToolbar id="tblToolbar" style="Clear">
                                     <Label id="lTable" text="New Table"/>
                                     <ToolbarSpacer id="tblSpacer"/>
-                                    <Button id="btnAdd" icon="sap-icon://add" type="Transparent" tooltip="Add" press=".onAddRow"/>
+                                    <Button id="btnAdd" icon="sap-icon://add" type="Transparent" tooltip="Add" press=".onAddRow" enabled="{task>/editableProps/itemsTable}"/>
                                     <SearchField id="tblSearch" width="10rem" placeholder="Enter search term" liveChange=".onSearch" search=".onSearch"/>
                                 </OverflowToolbar>
                             </headerToolbar>
@@ -54,12 +54,12 @@
                             <items>
                                 <ColumnListItem id="row">
                                     <cells>
-                                        <CheckBox id="cbApp" selected="{gts>Applicable}" editable="false"/>
-                                        <Input id="iDesc" value="{gts>ProdDesc}" editable="false"/>
-                                        <Input id="iQty" value="{gts>Qunt}" editable="false"/>
-                                        <Input id="iModel" value="{gts>GpuModel}" placeholder="Enter text" editable="false"/>
-                                        <Input id="iEccn" value="{gts>Eccn}" editable="false"/>
-                                        <Button id="btnDel" icon="sap-icon://delete" type="Transparent" tooltip="Delete" press=".onDeleteRow"/>
+                                        <CheckBox id="cbApp" selected="{gts>Applicable}" editable="{task>/editableProps/itemsTable}"/>
+                                        <Input id="iDesc" value="{gts>ProdDesc}" editable="{task>/editableProps/itemsTable}"/>
+                                        <Input id="iQty" value="{gts>Qunt}" editable="{task>/editableProps/itemsTable}"/>
+                                        <Input id="iModel" value="{gts>GpuModel}" placeholder="Enter text" editable="{task>/editableProps/itemsTable}"/>
+                                        <Input id="iEccn" value="{gts>Eccn}" editable="{task>/editableProps/itemsTable}"/>
+                                        <Button id="btnDel" icon="sap-icon://delete" enabled="{task>/editableProps/itemsTable}" type="Transparent" tooltip="Delete" press=".onDeleteRow"/>
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -77,91 +77,97 @@
                         text="6. I agree that if we have reached the &#8216;cumulative TPP&#8217;, that we agree to notify BIS by email to&#10;EARReports@bis.doc.gov with subject line &#8220;LPP TPP Limit Reached&#8221;."/>
                     <Text id="p8" class="lppPara" text="7. I agree not to transfer the products above inside the destination country."/>
                     <Text id="p9" class="lppPara" text="8. Acknowledgment"/>
-                    <Text id="p10" class="lppPara"
+                    <Text id="p10" class="lppPara" visible="{ui>/showUc}"
                         text="By signing this certification below, as the Ultimate Consignee (owner of items identified above), I acknowledge that I am fully authorized to bind to the commitments 1-7 outlined above and the information provided herein is true and accurate"/>
 
+                    <!-- Ultimate Consignee: hidden when only an End User is maintained -->
+                    <VBox id="ucSection" visible="{ui>/showUc}">
                     <VBox id="fUcOwner" class="lppField">
                         <Label id="lUcOwner" text="Name of Ultimate Consignee (Owner): " labelFor="iUcOwner" wrapping="true"/>
-                        <Input id="iUcOwner" value="{gts>/UcCustomerName}" editable="{task>/readOnly}"/>
+                        <Input id="iUcOwner" value="{gts>/UcCustomerName}" editable="{task>/editableProps/ultimateConsignee}"/>
                     </VBox>
                     <VBox id="fUcAuth" class="lppField">
                         <Label id="lUcAuth" text="Name of Authorized Person: " labelFor="iUcAuth" wrapping="true"/>
-                        <Input id="iUcAuth" value="{gts>/UcCustomerName}" editable="{task>/readOnly}"/>
+                        <Input id="iUcAuth" value="{gts>/UcCustomerName}" editable="{task>/editableProps/nameOfAuthPerson}"/>
                     </VBox>
                     <VBox id="fUcAuthTitle" class="lppField">
                         <Label id="lUcAuthTitle" text="Title of Authorized Person: " labelFor="iUcAuthTitle" wrapping="true"/>
-                        <Input id="iUcAuthTitle" value="{context>/ucAuthorizedPersonTitle}" placeholder="Enter text" editable="{task>/readOnly}" maxLength="256"/>
+                        <Input id="iUcAuthTitle" value="{context>/ucAuthorizedPersonTitle}" placeholder="Enter text" editable="{task>/editableProps/titleOfAuthPerson}" maxLength="256"/>
                     </VBox>
                     <VBox id="fUcSign" class="lppField">
                         <Label id="lUcSign" text="Signature(s) of Authorized Person: " labelFor="iUcSign" wrapping="true"/>
-                        <Input id="iUcSign" value="{context>/ucSignature}" placeholder="Enter text" editable="{task>/readOnly}" maxLength="256"/>
+                        <Input id="iUcSign" value="{context>/ucSignature}" placeholder="Enter text" editable="{task>/editableProps/sigOfAuthPerson}" maxLength="256"/>
                     </VBox>
                     <VBox id="fUcDate" class="lppField">
                         <Label id="lUcDate" text="Date Document is Signed:" labelFor="iUcDate" wrapping="true"/>
-                        <Input id="iUcDate" value="{context>/ucSignedDate}" placeholder="Enter text" editable="true" maxLength="256"/>
+                        <Input id="iUcDate" value="{context>/ucSignedDate}" placeholder="Enter text" editable="{task>/editableProps/dateDocIsSignedAuth}" maxLength="256"/>
                     </VBox>
 
                     <Text id="p11" class="lppPara" text="Section 2n for below table"/>
 
                     <VBox id="fUcAddr" class="lppField">
                         <Label id="lUcAddr" text="Address: " labelFor="iUcAddr" wrapping="true"/>
-                        <Input id="iUcAddr" value="{gts>/UcStreet}" editable="true"/>
+                        <Input id="iUcAddr" value="{gts>/UcStreet}" editable="{task>/editableProps/addressAuthUser}"/>
                     </VBox>
                     <VBox id="fUcCity" class="lppField">
                         <Label id="lUcCity" text="City:" labelFor="iUcCity" wrapping="true"/>
-                        <Input id="iUcCity" value="{gts>/UcCity}" editable="true"/>
+                        <Input id="iUcCity" value="{gts>/UcCity}" editable="{task>/editableProps/addressAuthUser}"/>
                     </VBox>
                     <VBox id="fUcCountry" class="lppField">
                         <Label id="lUcCountry" text="Country: " labelFor="iUcCountry" wrapping="true"/>
-                        <Input id="iUcCountry" value="{gts>/UcCountry}" editable="true"/>
+                        <Input id="iUcCountry" value="{gts>/UcCountry}" editable="{task>/editableProps/addressAuthUser}"/>
                     </VBox>
                     <VBox id="fUcWeb" class="lppField">
                         <Label id="lUcWeb" text="Website:" labelFor="iUcWeb" wrapping="true"/>
-                        <Input id="iUcWeb" value="{gts>/UcWebsite}" editable="true"/>
+                        <Input id="iUcWeb" value="{gts>/UcWebsite}" editable="{task>/editableProps/addressAuthUser}"/>
                     </VBox>
                     <VBox id="fUcMail" class="lppField">
                         <Label id="lUcMail" text="E-mail address of person completing  this form (This email address will be  use to send all required" labelFor="iUcMail" wrapping="true"/>
-                        <Input id="iUcMail" value="{gts>/UcCustEmail}" editable="true"/>
+                        <Input id="iUcMail" value="{gts>/UcCustEmail}" editable="{task>/editableProps/addressAuthUser}"/>
+                    </VBox>
                     </VBox>
 
+                    <!-- End User: hidden when it is the same as the Ultimate Consignee -->
+                    <VBox id="euSection" visible="{ui>/showEu}">
                     <Text id="p12" class="lppPara" renderWhitespace="true"
                         text="By signing this certification below, as the End User of the products, I acknowledge that I am fully authorized &#10;to bind End User to the commitments 1-7 outlined above and the information provided herein is true and &#10;accurate.  This section is not required if the End User is the same as the Ultimate Consignee. "/>
 
                     <VBox id="fEuName" class="lppField">
                         <Label id="lEuName" text="Name of End User(s) (Entity name):" labelFor="iEuName" wrapping="true"/>
-                        <Input id="iEuName" value="{gts>/EuCustomerName}" editable="true"/>
+                        <Input id="iEuName" value="{gts>/EuCustomerName}" editable="{task>/editableProps/nameOfEndUser}"/>
                     </VBox>
                     <VBox id="fEuTitle" class="lppField">
                         <Label id="lEuTitle" text="Title: " labelFor="iEuTitle" wrapping="true"/>
-                        <Input id="iEuTitle" value="{gts>/euTitle}" placeholder="Enter text" editable="true" maxLength="256"/>
+                        <Input id="iEuTitle" value="{context>/euTitle}" placeholder="Enter text" editable="{task>/editableProps/nameOfEndUser}" maxLength="256"/>
                     </VBox>
                     <VBox id="fEuSign" class="lppField">
                         <Label id="lEuSign" text="Signature(s) of End User(s) " labelFor="iEuSign" wrapping="true"/>
-                        <Input id="iEuSign" value="{context>/euSignature}" placeholder="Enter text" editable="true" maxLength="256"/>
+                        <Input id="iEuSign" value="{context>/euSignature}" placeholder="Enter text" editable="{task>/editableProps/sigOfEndPerson}" maxLength="256"/>
                     </VBox>
                     <VBox id="fEuDate" class="lppField">
                         <Label id="lEuDate" text="Date(s) Document is Signed: " labelFor="iEuDate" wrapping="true"/>
-                        <Input id="iEuDate" value="{context>/euSignedDate}" placeholder="Enter text" editable="true" maxLength="256"/>
+                        <Input id="iEuDate" value="{context>/euSignedDate}" placeholder="Enter text" editable="{task>/editableProps/dateDocIsSignedEnd}" maxLength="256"/>
                     </VBox>
                     <VBox id="fEuAddr" class="lppField">
                         <Label id="lEuAddr" text="Address: " labelFor="iEuAddr" wrapping="true"/>
-                        <Input id="iEuAddr" value="{gts>/EuStreet}" editable="true"/>
+                        <Input id="iEuAddr" value="{gts>/EuStreet}" editable="{task>/editableProps/addressEndUser}"/>
                     </VBox>
                     <VBox id="fEuCity" class="lppField">
                         <Label id="lEuCity" text="City: " labelFor="iEuCity" wrapping="true"/>
-                        <Input id="iEuCity" value="{gts>/EuCity}" editable="true"/>
+                        <Input id="iEuCity" value="{gts>/EuCity}" editable="{task>/editableProps/addressEndUser}"/>
                     </VBox>
                     <VBox id="fEuCountry" class="lppField">
                         <Label id="lEuCountry" text="Country: " labelFor="iEuCountry" wrapping="true"/>
-                        <Input id="iEuCountry" value="{gts>/EuCountry}" editable="true"/>
+                        <Input id="iEuCountry" value="{gts>/EuCountry}" editable="{task>/editableProps/addressEndUser}"/>
                     </VBox>
                     <VBox id="fEuWeb" class="lppField">
                         <Label id="lEuWeb" text="Website: " labelFor="iEuWeb" wrapping="true"/>
-                        <Input id="iEuWeb" value="{gts>/EuWebsite}" editable="true"/>
+                        <Input id="iEuWeb" value="{gts>/EuWebsite}" editable="{task>/editableProps/addressEndUser}"/>
                     </VBox>
                     <VBox id="fEuMail" class="lppField">
                         <Label id="lEuMail" text="E-mail address of person completing  this form (This email address will be  use to send all required" labelFor="iEuMail" wrapping="true"/>
-                        <Input id="iEuMail" value="{gts>/EuCustEmail}" editable="true"/>
+                        <Input id="iEuMail" value="{gts>/EuCustEmail}" editable="{task>/editableProps/addressEndUser}"/>
+                    </VBox>
                     </VBox>
 
                     <Text id="p13" class="lppPara" renderWhitespace="true"

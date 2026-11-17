@@ -1,52 +1,52 @@
 _schema-version: "3.2"
-ID: ZgtsLppApprovalTask
+ID: zgtslppapprovaldevTask
 version: 0.0.1
 modules:
-- name: ZgtsLppApprovalTask-destination-content
+- name: zgtslppapprovaldevTask-destination-content
   type: com.sap.application.content
   requires:
-  - name: ZgtsLppApprovalTask-destination-service
+  - name: zgtslppapprovaldevTask-destination-service
     parameters:
       content-target: true
-  - name: ZgtsLppApprovalTask_html_repo_host
+  - name: zgtslppapprovaldevTask_html_repo_host
     parameters:
       service-key:
-        name: ZgtsLppApprovalTask_html_repo_host-key
-  - name: uaa_ZgtsLppApprovalTask
+        name: zgtslppapprovaldevTask_html_repo_host-key
+  - name: uaa_zgtslppapprovaldevTask
     parameters:
       service-key:
-        name: uaa_ZgtsLppApprovalTask-key
+        name: uaa_zgtslppapprovaldevTask-key
   parameters:
     content:
       subaccount:
         destinations:
-        - Name: zgtslppapproval_ZgtsLppApprovalTask_html_repo_host
-          ServiceInstanceName: ZgtsLppApprovalTask-html5-app-host-service
-          ServiceKeyName: ZgtsLppApprovalTask_html_repo_host-key
-          sap.cloud.service: zgtslppapproval
+        - Name: zgtslppapprovaldev_zgtslppapprovaldevTask_html_repo_host
+          ServiceInstanceName: zgtslppapprovaldevTask-html5-app-host-service
+          ServiceKeyName: zgtslppapprovaldevTask_html_repo_host-key
+          sap.cloud.service: zgtslppapprovaldev
         - Authentication: OAuth2UserTokenExchange
-          Name: zgtslppapproval_uaa_ZgtsLppApprovalTask
-          ServiceInstanceName: ZgtsLppApprovalTask-xsuaa-service
-          ServiceKeyName: uaa_ZgtsLppApprovalTask-key
-          sap.cloud.service: zgtslppapproval
+          Name: zgtslppapprovaldev_uaa_zgtslppapprovaldevTask
+          ServiceInstanceName: zgtslppapprovaldevTask-xsuaa-service
+          ServiceKeyName: uaa_zgtslppapprovaldevTask-key
+          sap.cloud.service: zgtslppapprovaldev
         existing_destinations_policy: update
   build-parameters:
     no-source: true
-- name: ZgtsLppApprovalTask-app-content
+- name: zgtslppapprovaldevTask-app-content
   type: com.sap.application.content
   path: .
   requires:
-  - name: ZgtsLppApprovalTask_html_repo_host
+  - name: zgtslppapprovaldevTask_html_repo_host
     parameters:
       content-target: true
   build-parameters:
     build-result: resources
     requires:
     - artifacts:
-      - comhpegtsworkflowuimodule.zip
-      name: comhpegtsworkflowuimodule
+      - comhpegtsworkflowuimoduledev.zip
+      name: comhpegtsworkflowuimoduledev
       target-path: resources/
-- name: comhpegtsworkflowuimodule
+- name: comhpegtsworkflowuimoduledev
   type: html5
   path: workflow-ui-module
   build-parameters:
@@ -57,7 +57,7 @@ modules:
     - npm run build:cf
     supported-platforms: []
 resources:
-- name: ZgtsLppApprovalTask-destination-service
+- name: zgtslppapprovaldevTask-destination-service
   type: org.cloudfoundry.managed-service
   parameters:
     config:
@@ -73,20 +73,20 @@ resources:
           existing_destinations_policy: update
       version: 1.0.0
     service: destination
-    service-name: ZgtsLppApprovalTask-destination-service
+    service-name: zgtslppapprovaldevTask-destination-service
     service-plan: lite
-- name: ZgtsLppApprovalTask_html_repo_host
+- name: zgtslppapprovaldevTask_html_repo_host
   type: org.cloudfoundry.managed-service
   parameters:
     service: html5-apps-repo
-    service-name: ZgtsLppApprovalTask-html5-app-host-service
+    service-name: zgtslppapprovaldevTask-html5-app-host-service
     service-plan: app-host
-- name: uaa_ZgtsLppApprovalTask
+- name: uaa_zgtslppapprovaldevTask
   type: org.cloudfoundry.managed-service
   parameters:
     path: ./xs-security.json
     service: xsuaa
-    service-name: ZgtsLppApprovalTask-xsuaa-service
+    service-name: zgtslppapprovaldevTask-xsuaa-service
     service-plan: application
 parameters:
   deploy_mode: html5-repo

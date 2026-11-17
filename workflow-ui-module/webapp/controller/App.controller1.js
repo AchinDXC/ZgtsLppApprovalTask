@@ -49,7 +49,7 @@ sap.ui.define(
       return new Blob([bytes], { type: type });
     }
 
-    return Controller.extend("com.hpe.gts.workflowuimodule.controller.App", {
+    return Controller.extend("com.hpe.gts.workflowuimodule.dev.controller.App", {
       // ================= DMS file upload =================
       _DMS_REPO_ID: "e7dd4f2c-d6f2-443c-b199-d50055d08f16",
 

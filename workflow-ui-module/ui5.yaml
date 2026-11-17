@@ -2,7 +2,7 @@
 
 specVersion: "2.5"
 metadata:
-  name: com.hpe.gts.workflowuimodule
+  name: com.hpe.gts.workflowuimodule.dev
 type: application
 server:
   customMiddleware:
@@ -31,5 +31,5 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: com.hpe.gts.workflowuimodule
+        component: com.hpe.gts.workflowuimodule.dev
         ui5Theme: sap_fiori_3

@@ -7,7 +7,7 @@ sap.ui.define([
 
 	Opa5.extendConfig({
 		arrangements: new Startup(),
-		viewNamespace: "com.hpe.gts.workflowuimodule.view.",
+		viewNamespace: "com.hpe.gts.workflowuimodule.dev.view.",
 		autoWait: true
 	});
 });

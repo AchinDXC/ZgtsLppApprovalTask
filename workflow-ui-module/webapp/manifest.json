@@ -1,7 +1,7 @@
 {
     "_version": "1.26.0",
     "sap.app": {
-        "id": "com.hpe.gts.workflowuimodule",
+        "id": "com.hpe.gts.workflowuimodule.dev",
         "type": "application",
         "i18n": "i18n/i18n.properties",
         "applicationVersion": {
@@ -66,7 +66,7 @@
             "i18n": {
                 "type": "sap.ui.model.resource.ResourceModel",
                 "settings": {
-                    "bundleName": "com.hpe.gts.workflowuimodule.i18n.i18n"
+                    "bundleName": "com.hpe.gts.workflowuimodule.dev.i18n.i18n"
                 }
             },
             "": {
@@ -87,7 +87,7 @@
                 "routerClass": "sap.m.routing.Router",
                 "viewType": "XML",
                 "async": true,
-                "viewPath": "com.hpe.gts.workflowuimodule.view",
+                "viewPath": "com.hpe.gts.workflowuimodule.dev.view",
                 "controlAggregation": "pages",
                 "controlId": "app",
                 "clearControlAggregation": false
@@ -112,7 +112,7 @@
             }
         },
         "rootView": {
-            "viewName": "com.hpe.gts.workflowuimodule.view.App",
+            "viewName": "com.hpe.gts.workflowuimodule.dev.view.App",
             "type": "XML",
             "async": true,
             "id": "App"
@@ -120,7 +120,7 @@
     },
     "sap.cloud": {
         "public": true,
-        "service": "zgtslppapproval"
+        "service": "zgtslppapprovaldev"
     },
     "sap.bpa.task": {
         "_version": "1.0.0",

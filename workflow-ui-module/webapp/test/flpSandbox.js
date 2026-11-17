@@ -40,7 +40,7 @@ sap.ui.define([
 								"tileType": "sap.ushell.ui.tile.StaticTile",
 								"properties": {
 									"title": "LPP Electronic Certificate Approval",
-									"targetURL": "#comhpegtsworkflowuimodule-display"
+									"targetURL": "#comhpegtsworkflowuimoduledev-display"
 								}
 							}]
 						}]
@@ -51,8 +51,8 @@ sap.ui.define([
 				"adapter": {
 					"config": {
 						"inbounds": {
-							"comhpegtsworkflowuimodule-display": {
-								"semanticObject": "comhpegtsworkflowuimodule",
+							"comhpegtsworkflowuimoduledev-display": {
+								"semanticObject": "comhpegtsworkflowuimoduledev",
 								"action": "display",
 								"description": "SAPUI5 task UI for GTS LPP Electronic Certificate approval",
 								"title": "LPP Electronic Certificate Approval",
@@ -61,7 +61,7 @@ sap.ui.define([
 								},
 								"resolutionResult": {
 									"applicationType": "SAPUI5",
-									"additionalInformation": "SAPUI5.Component=com.hpe.gts.workflowuimodule",
+									"additionalInformation": "SAPUI5.Component=com.hpe.gts.workflowuimodule.dev",
 									"url": sap.ui.require.toUrl("com/hpe/gts/workflowuimodule")
 								}
 							}

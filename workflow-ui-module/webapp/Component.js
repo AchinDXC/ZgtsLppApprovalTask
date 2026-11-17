@@ -4,7 +4,7 @@ sap.ui.define(
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageBox",
     "sap/ui/core/BusyIndicator",
-    "com/hpe/gts/workflowuimodule/model/models",
+    "com/hpe/gts/workflowuimodule/dev/model/models",
     'sap/ui/model/Filter',
     'sap/ui/model/FilterOperator'
   ],
@@ -37,7 +37,7 @@ sap.ui.define(
     // GTS field holding the customer e-mail used for the customer review (Level 2 -> CUST_ACT)
     var CUSTOMER_EMAIL_FIELD = "CustEmail";
 
-    return UIComponent.extend("com.hpe.gts.workflowuimodule.Component", {
+    return UIComponent.extend("com.hpe.gts.workflowuimodule.dev.Component", {
       metadata: {
         manifest: "json"
       },
@@ -73,10 +73,69 @@ sap.ui.define(
 
         this._bProcessLevel = this.getModel("task").getProperty("/TaskTitle")?.split(":")[0];
         this.getModel("task").setProperty("/processLevel", this._bProcessLevel?.split(" ")?.[1]);
-        if (this._bProcessLevel === 'Level 1' || this._bProcessLevel === 'Level 5')
-          this.getModel("task").setProperty("/readOnly", false);
-        else
-          this.getModel("task").setProperty("/readOnly", true);
+        let oEditableProps = {
+          "salesOrder": false,
+          "itemsTable": false,
+          "ultimateConsignee": false,
+          "nameOfAuthPerson": false,
+          "titleOfAuthPerson": false,
+          "sigOfAuthPerson": false,
+          "dateDocIsSignedAuth": false,
+          "addressAuthUser": false,
+          "nameOfEndUser": false,
+          "sigOfEndPerson": false,
+          "dateDocIsSignedEnd": false,
+          "addressEndUser": false
+        }
+        if (this._bProcessLevel === 'Level 1' || this._bProcessLevel === 'Level 5' || this._bProcessLevel === 'Level 6') {
+            oEditableProps = {
+            "salesOrder": false,
+            "itemsTable": true,
+            "ultimateConsignee": true,
+            "nameOfAuthPerson": true,
+            "titleOfAuthPerson": true,
+            "sigOfAuthPerson": true,
+            "addressAuthUser": true,
+            "dateDocIsSignedAuth": true,
+            "nameOfEndUser": true,
+            "sigOfEndPerson": true,
+            "dateDocIsSignedEnd": true,
+            "addressEndUser": true
+          }
+        }
+        else if (this._bProcessLevel === 'Level 2' || this._bProcessLevel === 'Level 4') {
+          oEditableProps = {
+            "salesOrder": false,
+            "itemsTable": false,
+            "ultimateConsignee": true,
+            "nameOfAuthPerson": true,
+            "titleOfAuthPerson": true,
+            "sigOfAuthPerson": true,
+            "addressAuthUser": true,
+            "dateDocIsSignedAuth": true,
+            "nameOfEndUser": true,
+            "sigOfEndPerson": true,
+            "dateDocIsSignedEnd": true,
+            "addressEndUser": true
+          }
+        }
+        else {
+          oEditableProps = {
+            "salesOrder": false,
+            "itemsTable": false,
+            "ultimateConsignee": true,
+            "nameOfAuthPerson": true,
+            "titleOfAuthPerson": true,
+            "sigOfAuthPerson": true,
+            "addressAuthUser": false,
+            "dateDocIsSignedAuth": true,
+            "nameOfEndUser": true,
+            "sigOfEndPerson": true,
+            "dateDocIsSignedEnd": true,
+            "addressEndUser": false
+          }
+        }
+        this.getModel("task").setProperty("/editableProps", oEditableProps);
 
         // Task context = inputs mapped in the process
         var taskContextModel = new JSONModel(this._getTaskInstancesBaseURL() + "/context");
@@ -98,7 +157,12 @@ sap.ui.define(
           custEmailMissing: false,
           custEmailInput: "",
           custEmailValid: false,
-          custEmailState: "None"
+          custEmailState: "None",
+          showUc: true,          // Ultimate Consignee section
+          showEu: true,          // End User section
+          certifyName: "",       // name in "I, <name>, hereby certify ..."
+          userEmail: "",         // e-mail of the logged-on user
+          isSuperUser: false     // userEmail === SuperEmail from LPP_HEADERSet
         }), "ui");
 
         this._pModelsLoaded = Promise.all([taskContextModel.dataLoaded(), taskInfoModel.dataLoaded()])
@@ -264,11 +328,105 @@ sap.ui.define(
 
           // Level 2: is the customer e-mail missing in GTS?  (oRecord exists now)
           this.getModel("ui").setProperty("/custEmailMissing", !String(oRecord[CUSTOMER_EMAIL_FIELD] || "").trim());
+
+          // which party sections to show (UC / EU)
+          this._setPartyVisibility(oRecord);
+
+          // logged-on user = SuperEmail from GTS?
+          await this._checkSuperUser(oRecord);
           return oRecord;
         } catch (e) {
           oGtsModel.setProperty("/busy", false);
           throw e;
         }
+      },
+
+      /**
+       * Ultimate Consignee (UC) / End User (EU) sections:
+       *   UC + EU same       -> Ultimate Consignee only
+       *   EU only (no UC)    -> End User only
+       *   UC + EU different  -> Ultimate Consignee + End User
+       *   UC only            -> Ultimate Consignee only
+       * "Same" = same customer number; if a number is missing, same name + street + city + country.
+       */
+      /**
+       * E-mail of the logged-on user.
+       *   1. Fiori launchpad / Work Zone (My Inbox): ushell UserInfo service
+       *   2. fallback: approuter user API (/user-api/currentUser) - only if that route exists in xs-app.json
+       * Resolves "" if it can't be determined.
+       */
+      getCurrentUserEmail: async function () {
+        if (this._sUserEmail !== undefined) {
+          return this._sUserEmail;
+        }
+        var sEmail = "";
+        try {
+          var oContainer = sap.ui.require("sap/ushell/Container") || (sap.ushell && sap.ushell.Container);
+          if (oContainer) {
+            var oUserInfo = await oContainer.getServiceAsync("UserInfo");
+            sEmail = (oUserInfo.getEmail && oUserInfo.getEmail()) ||
+                     (oUserInfo.getUser && oUserInfo.getUser().getEmail && oUserInfo.getUser().getEmail()) || "";
+          }
+        } catch (e) {
+          console.warn("ushell UserInfo not available:", e);
+        }
+        if (!sEmail) {
+          try {
+            var r = await fetch(sap.ui.require.toUrl("com/hpe/gts/workflowuimodule") + "/user-api/currentUser",
+              { credentials: "include" });
+            if (r.ok) {
+              sEmail = (await r.json()).email || "";
+            }
+          } catch (e) { /* route not configured */ }
+        }
+        this._sUserEmail = String(sEmail || "").trim();
+        return this._sUserEmail;
+      },
+
+      /** ui>/isSuperUser = logged-on user's e-mail equals LPP_HEADERSet.SuperEmail (case-insensitive) */
+      _checkSuperUser: async function (g) {
+        var oUi = this.getModel("ui");
+        var sUser = (await this.getCurrentUserEmail()).toLowerCase();
+        var sSuper = String(g.SuperEmail || "").trim().toLowerCase();
+        oUi.setProperty("/userEmail", sUser);
+        oUi.setProperty("/isSuperUser", !!sUser && !!sSuper && sUser === sSuper);
+
+        // super user -> every field editable, whatever the level
+        if (oUi.getProperty("/isSuperUser")) {
+          var oTask = this.getModel("task");
+          var oProps = Object.assign({}, oTask.getProperty("/editableProps"));
+          Object.keys(oProps).forEach(function (k) { oProps[k] = true; });
+          oTask.setProperty("/editableProps", oProps);
+          oTask.setProperty("/readOnly", false);
+        }
+        return oUi.getProperty("/isSuperUser");
+      },
+
+      _setPartyVisibility: function (g) {
+        var norm = function (v) {
+          return String(v || "").trim().toLowerCase().replace(/\s+/g, " ").replace(/^0+(?=\d)/, "");
+        };
+        var bHasUc = !!(norm(g.UcCustomerno) || norm(g.UcCustomerName));
+        var bHasEu = !!(norm(g.EuCustomerno) || norm(g.EuCustomerName));
+
+        var bSame = false;
+        if (bHasUc && bHasEu) {
+          if (norm(g.UcCustomerno) && norm(g.EuCustomerno)) {
+            bSame = norm(g.UcCustomerno) === norm(g.EuCustomerno);
+          } else {
+            bSame = ["CustomerName", "Street", "City", "Country"].every(function (f) {
+              return norm(g["Uc" + f]) === norm(g["Eu" + f]);
+            });
+          }
+        }
+
+        var bShowUc = bHasUc || !bHasEu;            // nothing maintained -> show both
+        var bShowEu = bHasEu ? !bSame : !bHasUc;
+
+        var oUi = this.getModel("ui");
+        oUi.setProperty("/showUc", bShowUc);
+        oUi.setProperty("/showEu", bShowEu);
+        oUi.setProperty("/certifyName", bShowUc ? (g.UcCustomerName || "") : (g.EuCustomerName || ""));
       },
 
      /** "1".."5" from the task title "Level n: ..." (set in setTaskModels) */
