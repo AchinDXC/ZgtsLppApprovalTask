@@ -20,7 +20,7 @@
                         text="This certification is provided in compliance with the requirements of the Export Administration Regulations&#10;(EAR), &#167;15 C.F.R. parts 730-774, by the Ultimate Consignee (owner of items identified below) and End&#10;User. In the gts of this certification, the Ultimate Consignee will own the products below and the End&#10;User will use the products. The Ultimate Consignee and the End User could be the same entity."/>
                     <Text id="p1" class="lppPara" text="I, {ui>/certifyName}, hereby certify and agree to the following"/>
 
-                    <VBox id="fUc" class="lppField" visible="{ui>/showUc}">
+                    <VBox id="fUc" class="lppField">
                         <Label id="lUc" text="ULTIMATE CONSIGNEE" labelFor="iUc" wrapping="true"/>
                         <Input id="iUc" value="{ui>/certifyName}" editable="{task>/editableProps/ultimateConsignee}"/>
                     </VBox>
@@ -77,11 +77,11 @@
                         text="6. I agree that if we have reached the &#8216;cumulative TPP&#8217;, that we agree to notify BIS by email to&#10;EARReports@bis.doc.gov with subject line &#8220;LPP TPP Limit Reached&#8221;."/>
                     <Text id="p8" class="lppPara" text="7. I agree not to transfer the products above inside the destination country."/>
                     <Text id="p9" class="lppPara" text="8. Acknowledgment"/>
-                    <Text id="p10" class="lppPara" visible="{ui>/showUc}"
+                    <Text id="p10" class="lppPara"
                         text="By signing this certification below, as the Ultimate Consignee (owner of items identified above), I acknowledge that I am fully authorized to bind to the commitments 1-7 outlined above and the information provided herein is true and accurate"/>
 
                     <!-- Ultimate Consignee: hidden when only an End User is maintained -->
-                    <VBox id="ucSection" visible="{ui>/showUc}">
+                    <VBox id="ucSection" >
                     <VBox id="fUcOwner" class="lppField">
                         <Label id="lUcOwner" text="Name of Ultimate Consignee (Owner): " labelFor="iUcOwner" wrapping="true"/>
                         <Input id="iUcOwner" value="{gts>/UcCustomerName}" editable="{task>/editableProps/ultimateConsignee}"/>
@@ -128,7 +128,7 @@
                     </VBox>
 
                     <!-- End User: hidden when it is the same as the Ultimate Consignee -->
-                    <VBox id="euSection" visible="{ui>/showEu}">
+                    <VBox id="euSection" >
                     <Text id="p12" class="lppPara" renderWhitespace="true"
                         text="By signing this certification below, as the End User of the products, I acknowledge that I am fully authorized &#10;to bind End User to the commitments 1-7 outlined above and the information provided herein is true and &#10;accurate.  This section is not required if the End User is the same as the Ultimate Consignee. "/>
 

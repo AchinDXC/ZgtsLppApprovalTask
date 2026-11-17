@@ -99,7 +99,7 @@ sap.ui.define(
       // ======================================================================
 
       _dmsUrl: function (sQuery) {
-        return sap.ui.require.toUrl("com/hpe/gts/workflowuimodule") + "/dms" + (sQuery ? "?" + sQuery : "");
+        return sap.ui.require.toUrl("com/hpe/gts/workflowuimodule/dev") + "/dms" + (sQuery ? "?" + sQuery : "");
       },
 
       /** CSRF token for the approuter route (cached; "" if the route has CSRF protection off) */
@@ -503,7 +503,7 @@ sap.ui.define(
           ["REQUEST_ID", g.RequestId || this.getOwnerComponent().getWorkflowInstanceId() || ""],
           ["GTS_DOCUMENT", g.GtsDocument],
           ["SALES_ORDER", so],
-          ["UC_CUSTOMER_NAME", g.UcCustomerName || "Not Provided"],
+          ["UC_CUSTOMER_NAME", this.getView().getModel("ui").getData()?.certifyName || "Not Provided"],
           ["UC_STREET", join(g.UcStreet, g.UcHouseNum)],
           ["UC_CITY", join(g.UcPostCode, g.UcCity)],
           ["UC_COUNTRY", g.UcCountry],
@@ -548,7 +548,7 @@ sap.ui.define(
       /** Renders the certificate via ADS; resolves { base64, fileName } */
       _renderCertificatePdf: async function (sStatus) {
         var sXml = await this._buildCertificateXml(sStatus);
-        var r = await fetch(sap.ui.require.toUrl("com/hpe/gts/workflowuimodule") +
+        var r = await fetch(sap.ui.require.toUrl("com/hpe/gts/workflowuimodule/dev") +
           "/ads/v1/adsRender/pdf?templateSource=storageName", {
           method: "POST",
           headers: { "Content-Type": "application/json", "Accept": "application/json" },

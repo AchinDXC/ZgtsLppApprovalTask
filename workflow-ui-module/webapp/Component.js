@@ -372,7 +372,7 @@ sap.ui.define(
         }
         if (!sEmail) {
           try {
-            var r = await fetch(sap.ui.require.toUrl("com/hpe/gts/workflowuimodule") + "/user-api/currentUser",
+            var r = await fetch(sap.ui.require.toUrl("com/hpe/gts/workflowuimodule/dev") + "/user-api/currentUser",
               { credentials: "include" });
             if (r.ok) {
               sEmail = (await r.json()).email || "";
@@ -424,8 +424,8 @@ sap.ui.define(
         var bShowEu = bHasEu ? !bSame : !bHasUc;
 
         var oUi = this.getModel("ui");
-        oUi.setProperty("/showUc", bShowUc);
-        oUi.setProperty("/showEu", bShowEu);
+        // oUi.setProperty("/showUc", bShowUc);
+        // oUi.setProperty("/showEu", bShowEu);
         oUi.setProperty("/certifyName", bShowUc ? (g.UcCustomerName || "") : (g.EuCustomerName || ""));
       },
 
