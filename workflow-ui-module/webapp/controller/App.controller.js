@@ -503,7 +503,7 @@ sap.ui.define(
           ["REQUEST_ID", g.RequestId || this.getOwnerComponent().getWorkflowInstanceId() || ""],
           ["GTS_DOCUMENT", g.GtsDocument],
           ["SALES_ORDER", so],
-          ["UC_CUSTOMER_NAME", g.UcCustomerName || "Not Provided"],
+          ["UC_CUSTOMER_NAME", this.getView().getModel("ui").getData()?.certifyName || "Not Provided"],
           ["UC_STREET", join(g.UcStreet, g.UcHouseNum)],
           ["UC_CITY", join(g.UcPostCode, g.UcCity)],
           ["UC_COUNTRY", g.UcCountry],
